@@ -9,7 +9,7 @@ const factory = (wtConfig, wtStorage) => {
     'Starting Authorization Extension - Version:',
     process.env.CLIENT_VERSION
   );
-  logger.info('hello from branch');
+  logger.info('hello from branch', 'hello from branch');
   logger.info(' > WT_URL:', wtConfig('WT_URL'));
   logger.info(' > PUBLIC_WT_URL:', wtConfig('PUBLIC_WT_URL'));
   // Require in place to load the dependency only when needed
