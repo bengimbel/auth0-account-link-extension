@@ -3,6 +3,8 @@
 // and eslint is configured to lint ES6.
 
 module.exports = function(currentUser, matchingUsers, params, token) {
+  console.log('params from script', params)
+  console.log('token from script', token)
   try {
     loadLinkPage(token);
   } catch (e) {
@@ -39,6 +41,7 @@ module.exports = function(currentUser, matchingUsers, params, token) {
     };
 
     linkEl.addEventListener('click', function(e) {
+      console.log('CLICK', params)
       authorize(token.iss, {
         client_id: params.client_id,
         redirect_uri: params.redirect_uri,
