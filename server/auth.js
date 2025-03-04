@@ -39,7 +39,7 @@ module.exports = {
     server.auth.strategy('jwt', 'jwt', {
       complete: true,
       validate: async (decoded, req, callback) => {
-        console.log(decoded, 'DECODED');
+        console.log(`${decoded} on validate start`);
         logger.info(`${decoded} on validate start`);
         if (!decoded) {
           return callback(null, false);
@@ -54,7 +54,7 @@ module.exports = {
             decoded.payload.iss === `https://${config('AUTH0_DOMAIN')}/`
           ) {
             return jwtOptions.resourceServer.key(decoded, (keyErr, key) => {
-              console.log(key, 'key', '1 if');
+              console.log(`${key} key 1 if`);
               logger.info(`${key} key 1 if`);
               if (keyErr) {
                 return callback(Boom.boomify(keyErr), null, null);
@@ -80,7 +80,7 @@ module.exports = {
               });
             });
           } else if (decoded && decoded.payload && decoded.payload.iss === config('PUBLIC_WT_URL')) {
-            console.log(token, 'token 2 if');
+            console.log(`${token} token 2 if`);
             logger.info(`${token} token 2 if`);
             return jwt.verify(
               token,
@@ -121,7 +121,7 @@ module.exports = {
         secret: config('EXTENSION_SECRET'),
         clientName: 'auth0-account-link',
         onLoginSuccess: (decoded, req, callback) => {
-          console.log(decoded, 'on login success');
+          console.log(`${decoded} on login success`);
           logger.info(`${decoded} on login success`);
           if (decoded) {
             // eslint-disable-next-line no-param-reassign
