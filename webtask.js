@@ -6,10 +6,9 @@ const urlHelpers = require('./lib/urlHelpers');
 
 const factory = (wtConfig, wtStorage) => {
   logger.info(
-    'Starting Authorization Extension - Version:',
+    'Starting Authorization Extension --- Version:',
     process.env.CLIENT_VERSION
   );
-  logger.info('hello from branch');
   logger.info(' > WT_URL:', wtConfig('WT_URL'));
   logger.info(' > PUBLIC_WT_URL:', wtConfig('PUBLIC_WT_URL'));
   // Require in place to load the dependency only when needed
