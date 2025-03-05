@@ -105,7 +105,7 @@ const register = async (server) => {
   server.auth.default('jwt');
 
   const session = {
-    plugin,
+    ...plugin,
     options: {
       stateKey: 'account-linking-admin-state',
       sessionStorageKey: 'com.auth0.account_linking.admin_ui.session_token',
