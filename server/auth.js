@@ -3,7 +3,7 @@ const Boom = require('@hapi/boom');
 const jwksRsa = require('jwks-rsa');
 const jwt = require('jsonwebtoken');
 const config = require('../lib/config');
-const registerSession = require('../lib/session');
+const { register } = require('../lib/session');
 const logger = require('../lib/logger');
 
 const scopes = [{ value: 'openid' }, { value: 'profile' }];
@@ -109,7 +109,7 @@ module.exports = {
 
     const session = {
       name: 'session',
-      register: registerSession.register,
+      register,
       options: {
         stateKey: 'account-linking-admin-state',
         sessionStorageKey: 'com.auth0.account_linking.admin_ui.session_token',
