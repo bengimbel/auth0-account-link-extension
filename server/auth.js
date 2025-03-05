@@ -118,16 +118,17 @@ module.exports = {
         audience: 'urn:api-account-linking',
         secret: config('EXTENSION_SECRET'),
         clientName: 'auth0-account-link',
-        onLoginSuccess: (decoded, req, callback) => {
+        // eslint-disable-next-line no-unused-vars
+        onLoginSuccess: (decoded, req) => {
           console.log(`${decoded} on login success`);
           logger.info(`${decoded} on login success`);
           if (decoded) {
-            // eslint-disable-next-line no-param-reassign
-            decoded.scope = scopes.map(scope => scope.value);
-            return callback(null, true, decoded);
+            decoded.scope = scopes.map(
+              scope => scope.value
+            ); // eslint-disable-line no-param-reassign
+            return decoded;
           }
-
-          return callback(null, false);
+          throw Boom.unauthorized('Invalid token', 'Token');
         }
       }
     };
