@@ -32,8 +32,12 @@ module.exports = function(currentUser, matchingUsers, params, token) {
           return key + '=' + encodeURIComponent(qs[key]);
         })
         .join('&');
-
-      window.location = domain + 'authorize?' + query;
+      
+        console.log(domain + 'authorize?' + query);
+        // remove this timeout
+        setTimeout(() => {
+          window.location = domain + 'authorize?' + query;
+        }, 10000);
     };
 
     var updateContinueUrl = function(linkEl, domain, state) {
