@@ -1,4 +1,6 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
+const { promisify } = require('util');
 const Boom = require('@hapi/boom');
 const jwksRsa = require('jwks-rsa');
 const jwt = require('jsonwebtoken');
@@ -37,71 +39,68 @@ module.exports = {
 
     server.auth.strategy('jwt', 'jwt', {
       complete: true,
-      verify: async (decoded, req, callback) => {
+      verify: async (decoded, req) => {
         console.log(`${JSON.stringify(decoded)} on validate start`);
         logger.info(`${JSON.stringify(decoded)} on validate start`);
-        if (!decoded) {
-          return callback(null, false);
-        }
-
-        const header = req.headers.authorization;
-        if (header && header.indexOf('Bearer ') === 0) {
+        try {
+          if (!decoded) {
+            return { isValid: false };
+          }
+          const header = req.headers.authorization;
+          if (!header || !header.indexOf('Bearer ') === 0) {
+            return { isValid: false };
+          }
           const token = header.split(' ')[1];
-          if (
-            decoded &&
-            decoded.payload &&
-            decoded.payload.iss === `https://${config('AUTH0_DOMAIN')}/`
-          ) {
-            return jwtOptions.resourceServer.key(decoded, (keyErr, key) => {
-              console.log(`${JSON.stringify(key)} key 1 if`);
-              logger.info(`${JSON.stringify(key)} key 1 if`);
-              if (keyErr) {
-                return callback(Boom.boomify(keyErr), null, null);
-              }
-              return jwt.verify(token, key, jwtOptions.resourceServer.verifyOptions, (err) => {
-                if (err) {
-                  return callback(Boom.unauthorized('Invalid token', 'Token'), null, null);
-                }
+          const isApiRequest = decoded && decoded.payload && decoded.payload.iss === `https://${config('AUTH0_DOMAIN')}/`;
+          const isDashboardAdminRequest = decoded && decoded.payload && decoded.payload.iss === config('PUBLIC_WT_URL');
 
-                if (decoded.payload.gty && decoded.payload.gty !== 'client-credentials') {
-                  return callback(Boom.unauthorized('Invalid token', 'Token'), null, null);
-                }
+          const getKeyAsync = promisify(jwtOptions.resourceServer.key);
+          const jwtVerifyAsync = promisify(jwt.verify);
 
-                if (!decoded.payload.sub.endsWith('@clients')) {
-                  return callback(Boom.unauthorized('Invalid token', 'Token'), null, null);
-                }
+          if (isApiRequest) {
+            if (decoded.payload.gty && decoded.payload.gty !== 'client-credentials') {
+              return { isValid: false };
+            }
 
-                if (decoded.payload.scope && typeof decoded.payload.scope === 'string') {
-                  decoded.payload.scope = decoded.payload.scope.split(' '); // eslint-disable-line no-param-reassign
-                }
+            if (!decoded.payload.sub.endsWith('@clients')) {
+              return { isValid: false };
+            }
 
-                return callback(null, true, decoded.payload);
-              });
-            });
-          } else if (decoded && decoded.payload && decoded.payload.iss === config('PUBLIC_WT_URL')) {
-            console.log(`${JSON.stringify(token)} token 2 if`);
-            logger.info(`${JSON.stringify(token)} token 2 if`);
-            return jwt.verify(
+            const resourceServerKey = await getKeyAsync(decoded);
+
+            if (!resourceServerKey) {
+              return { isValid: false };
+            }
+
+            // this can throw if there is an error
+            await jwtVerifyAsync(token, resourceServerKey, jwtOptions.resourceServer.verifyOptions);
+
+
+            if (decoded.payload.scope && typeof decoded.payload.scope === 'string') {
+              decoded.payload.scope = decoded.payload.scope.split(' '); // eslint-disable-line no-param-reassign
+            }
+
+            return { credentials: decoded.payload, isValid: true };
+          }
+          if (isDashboardAdminRequest) {
+            if (!decoded.payload.access_token || !decoded.payload.access_token.length) {
+              return { isValid: false };
+            }
+
+            // this can throw if there is an error
+            await jwtVerifyAsync(
               token,
               jwtOptions.dashboardAdmin.key,
-              jwtOptions.dashboardAdmin.verifyOptions,
-              (err) => {
-                if (err) {
-                  return callback(Boom.unauthorized('Invalid token', 'Token'), null, null);
-                }
-
-                if (!decoded.payload.access_token || !decoded.payload.access_token.length) {
-                  return callback(Boom.unauthorized('Invalid token', 'Token'), null, null);
-                }
-
-                decoded.payload.scope = scopes.map(scope => scope.value);
-                return callback(null, true, decoded.payload);
-              }
+              jwtOptions.dashboardAdmin.verifyOptions
             );
+            decoded.payload.scope = scopes.map(
+              scope => scope.value
+            ); // eslint-disable-line no-param-reassign
+            return { credentials: decoded.payload, isValid: true };
           }
+        } catch (error) {
+          return { isValid: false };
         }
-
-        return callback(null, false);
       }
     });
     server.auth.default('jwt');
