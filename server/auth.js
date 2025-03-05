@@ -39,8 +39,8 @@ module.exports = {
     server.auth.strategy('jwt', 'jwt', {
       complete: true,
       validate: async (decoded, req, callback) => {
-        console.log(`${decoded} on validate start`);
-        logger.info(`${decoded} on validate start`);
+        console.log(`${JSON.stringify(decoded)} on validate start`);
+        logger.info(`${JSON.stringify(decoded)} on validate start`);
         if (!decoded) {
           return callback(null, false);
         }
@@ -54,8 +54,8 @@ module.exports = {
             decoded.payload.iss === `https://${config('AUTH0_DOMAIN')}/`
           ) {
             return jwtOptions.resourceServer.key(decoded, (keyErr, key) => {
-              console.log(`${key} key 1 if`);
-              logger.info(`${key} key 1 if`);
+              console.log(`${JSON.stringify(key)} key 1 if`);
+              logger.info(`${JSON.stringify(key)} key 1 if`);
               if (keyErr) {
                 return callback(Boom.boomify(keyErr), null, null);
               }
@@ -80,8 +80,8 @@ module.exports = {
               });
             });
           } else if (decoded && decoded.payload && decoded.payload.iss === config('PUBLIC_WT_URL')) {
-            console.log(`${token} token 2 if`);
-            logger.info(`${token} token 2 if`);
+            console.log(`${JSON.stringify(token)} token 2 if`);
+            logger.info(`${JSON.stringify(token)} token 2 if`);
             return jwt.verify(
               token,
               jwtOptions.dashboardAdmin.key,
