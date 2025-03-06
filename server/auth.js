@@ -40,7 +40,7 @@ module.exports = {
     server.auth.strategy('jwt', 'jwt', {
       complete: true,
       verify: async (decoded, req) => {
-        logger.info(`${JSON.stringify(decoded)} on validate start123`);
+        logger.info(`${JSON.stringify(decoded)} on validate startttt`);
         try {
           if (!decoded) {
             logger.info(`${JSON.stringify(decoded)} isApiRequest IS FAIL NO DECODED`);
