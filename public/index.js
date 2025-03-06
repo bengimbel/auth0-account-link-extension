@@ -33,11 +33,7 @@ module.exports = function(currentUser, matchingUsers, params, token) {
         })
         .join('&');
       
-        console.log(domain + 'authorize?' + query);
-        // remove this timeout
-        setTimeout(() => {
-          window.location = domain + 'authorize?' + query;
-        }, 10000);
+        window.location = domain + 'authorize?' + query;
     };
 
     var updateContinueUrl = function(linkEl, domain, state) {
@@ -45,7 +41,6 @@ module.exports = function(currentUser, matchingUsers, params, token) {
     };
 
     linkEl.addEventListener('click', function(e) {
-      console.log('CLICK', params)
       authorize(token.iss, {
         client_id: params.client_id,
         redirect_uri: params.redirect_uri,

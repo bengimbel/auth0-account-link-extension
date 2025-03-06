@@ -40,8 +40,7 @@ module.exports = {
     server.auth.strategy('jwt', 'jwt', {
       complete: true,
       verify: async (decoded, req) => {
-        console.log(`${JSON.stringify(decoded)} on validate start`);
-        logger.info(`${JSON.stringify(decoded)} on validate start`);
+        logger.info(`${JSON.stringify(decoded)} on validate start123`);
         try {
           if (!decoded) {
             logger.info(`${JSON.stringify(decoded)} isApiRequest IS FAIL NO DECODED`);
@@ -127,7 +126,6 @@ module.exports = {
         clientName: 'auth0-account-link',
         // eslint-disable-next-line no-unused-vars
         onLoginSuccess: (decoded, req) => {
-          console.log(`${JSON.stringify(decoded)} on login success`);
           logger.info(`${JSON.stringify(decoded)} on login success`);
           if (decoded) {
             decoded.scope = scopes.map(
