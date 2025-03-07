@@ -95,6 +95,8 @@ module.exports = () => ({
     const stylesheetTag = stylesheetHelper.tag('link');
     const customCSSTag = stylesheetHelper.tag(config('CUSTOM_CSS'), true);
     const params = req.query;
+    logger.info(`${req.query} : QUERY`);
+    console.log(`${req.query} : QUERY`);
 
     const dynamicSettings = {};
 
@@ -110,15 +112,6 @@ module.exports = () => ({
       const whatamI = await handleJwt(token, params.child_token);
       console.log('whatamI', whatamI);
       logger.info('whatamI', whatamI);
-      const getKey = jwksRsa.hapiJwt2Key({
-        cache: true,
-        rateLimit: true,
-        jwksRequestsPerMinute: process.env.NODE_ENV === 'test' ? 10 : 2,
-        jwksUri: `${config('AUTH0_RTA')}/.well-known/jwks.json`
-      });
-  
-      const getKeyAsync = promisify(getKey);
-      const key = await getKeyAsync(token);
       logger.info(`${JSON.stringify(token)} child token decoded`);
       console.log(`${JSON.stringify(token)} child token decoded`);
       try {
