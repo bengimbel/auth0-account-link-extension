@@ -43,14 +43,11 @@ const handleJwt = async (token) => {
   const jwtVerifyAsync = promisify(jwt.verify);
   try {
     const resourceServerKey = await getKeyAsync(token);
-    const whatami = await jwtVerifyAsync(
+    await jwtVerifyAsync(
       token,
       resourceServerKey,
       jwtOptions.resourceServer.verifyOptions
     );
-    logger.info('WHATAMI', JSON.stringify(whatami));
-    console.log('WHATAMI', JSON.stringify(whatami));
-    return whatami;
   } catch (error) {
     console.log('ERROR handlejwt', error);
     logger.info('ERROR handlejwt', error);
@@ -68,19 +65,14 @@ const handleJwt = async (token) => {
 
 const decodeToken = async (token) => {
   try {
-    const handleJ = await handleJwt(token);
+    await handleJwt(token);
     const decoded = decode(token);
-    logger.info('handleJ', JSON.stringify(handleJ));
-    console.log('handleJ', JSON.stringify(handleJ));
     logger.info('decoded', JSON.stringify(decoded));
     console.log('decoded', JSON.stringify(decoded));
-    const handleJDecoded = decode(handleJ);
-    console.log('handleJDecoded', JSON.stringify(handleJDecoded));
-    logger.info('handleJDecoded', JSON.stringify(handleJDecoded));
     return decoded;
   } catch (err) {
-    console.log('ERROR handlejwt', err);
-    logger.info('ERROR handlejwt', err);
+    console.log('ERROR handlejwt decodeToken', err);
+    logger.info('ERROR handlejwt decodeToken', err);
   }
 };
 
