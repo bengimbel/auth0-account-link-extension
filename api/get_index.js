@@ -52,10 +52,11 @@ module.exports = () => ({
     if (params.logoPath) dynamicSettings.logoPath = params.logoPath;
     try {
       logger.info('Start decoding child token');
-      console.log('Start decoding child token');
+      logger.info(`${params.child_token} : Start decoding child token`);
+      console.log(`${params.child_token} : Start decoding child token`);
       const token = await decodeToken(params.child_token);
-      logger.info(`${token} child token decoded`);
-      console.log(`${token} child token decoded`);
+      logger.info(`${JSON.stringify(token)} child token decoded`);
+      console.log(`${JSON.stringify(token)} child token decoded`);
       try {
         const { currentUser, matchingUsers } = await fetchUsersFromToken(token);
         const settings = await getSettings();

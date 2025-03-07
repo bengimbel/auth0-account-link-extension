@@ -41,7 +41,7 @@ module.exports = {
       complete: true,
       verify: async (decoded, req) => {
         logger.info('on validate startttt');
-        console.log('onvalidatestart');
+        console.log(`${JSON.stringify(decoded)} onvalidatestart`);
         try {
           if (!decoded) {
             console.log('isApiRequest IS FAIL NO DECODED');
