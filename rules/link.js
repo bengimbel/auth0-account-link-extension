@@ -187,8 +187,7 @@ module.exports = ({ extensionURL = '', username = 'Unknown', clientID = '', clie
     var options = {
       expiresIn: '5m',
       audience: tokenInfo.clientId,
-      issuer: qualifyDomain(tokenInfo.issuer),
-      algorithm: 'RS256'
+      issuer: qualifyDomain(tokenInfo.issuer)
     };
 
     var userSub = {

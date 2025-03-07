@@ -26,15 +26,14 @@ const handleJwt = async (childtoken) => {
     logger.info(`${JSON.stringify(header)} header`);
 
     const jwtVerifyAsync = promisify(jwt.verify);
-    const getKey = jwksRsa.hapiJwt2Key({
-      cache: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: process.env.NODE_ENV === 'test' ? 10 : 2,
-      jwksUri: `${config('AUTH0_RTA')}/.well-known/jwks.json`
-    });
+    // const getKey = jwksRsa.hapiJwt2Key({
+    //   cache: true,
+    //   rateLimit: true,
+    //   jwksRequestsPerMinute: process.env.NODE_ENV === 'test' ? 10 : 2,
+    //   jwksUri: `${config('AUTH0_RTA')}/.well-known/jwks.json`
+    // });
 
-    const getKeyAsync = promisify(getKey);
-    const key = await getKeyAsync(decoded);
+    const key = config('EXTENSION_SECRET');
     console.log(`${key} key`);
     logger.info(`${key} key`);
     console.log('key session login/callback');
@@ -49,7 +48,7 @@ const handleJwt = async (childtoken) => {
     const verifyOptions = {
       audience: config('PUBLIC_WT_URL'),
       issuer: `${config('AUTH0_RTA')}/`,
-      algorithms: ['HS256', 'RS256']
+      algorithms: ['HS256']
     };
 
     await jwtVerifyAsync(childtoken, key, verifyOptions);
