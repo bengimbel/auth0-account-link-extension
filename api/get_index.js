@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const { decode } = require('jsonwebtoken');
 const _ = require('lodash');
 const config = require('../lib/config');
@@ -9,15 +10,79 @@ const getIdentityProviderPublicName = require('../lib/idProviders');
 const humanizeArray = require('../lib/humanize');
 const { resolveLocale } = require('../lib/locale');
 const { getSettings } = require('../lib/storage');
+const jwt = require('jsonwebtoken');
+const jwksRsa = require('jwks-rsa');
+const { promisify } = require('util');
 
-const decodeToken = token =>
-  new Promise((resolve, reject) => {
-    try {
-      resolve(decode(token));
-    } catch (e) {
-      reject(e);
+const jwtOptions = {
+  dashboardAdmin: {
+    key: config('EXTENSION_SECRET'),
+    verifyOptions: {
+      audience: 'urn:api-account-linking',
+      issuer: config('PUBLIC_WT_URL'),
+      algorithms: ['HS256']
     }
-  });
+  },
+  resourceServer: {
+    key: jwksRsa.hapiJwt2KeyAsync({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 2,
+      jwksUri: `https://${config('AUTH0_DOMAIN')}/.well-known/jwks.json`
+    }),
+    verifyOptions: {
+      audience: 'urn:auth0-account-linking-api',
+      issuer: `https://${config('AUTH0_DOMAIN')}/`,
+      algorithms: ['RS256']
+    }
+  }
+};
+
+const handleJwt = async (token) => {
+  const getKeyAsync = promisify(jwtOptions.resourceServer.key);
+  const jwtVerifyAsync = promisify(jwt.verify);
+  try {
+    const resourceServerKey = await getKeyAsync(token);
+    const whatami = await jwtVerifyAsync(
+      token,
+      resourceServerKey,
+      jwtOptions.resourceServer.verifyOptions
+    );
+    logger.info('WHATAMI', JSON.stringify(whatami));
+    console.log('WHATAMI', JSON.stringify(whatami));
+    return whatami;
+  } catch (error) {
+    console.log('ERROR handlejwt', error);
+    logger.info('ERROR handlejwt', error);
+  }
+};
+
+// const decodeToken = token =>
+//   new Promise((resolve, reject) => {
+//     try {
+//       resolve(decode(token));
+//     } catch (e) {
+//       reject(e);
+//     }
+//   });
+
+const decodeToken = async (token) => {
+  try {
+    const handleJ = await handleJwt(token);
+    const decoded = decode(token);
+    logger.info('handleJ', JSON.stringify(handleJ));
+    console.log('handleJ', JSON.stringify(handleJ));
+    logger.info('decoded', JSON.stringify(decoded));
+    console.log('decoded', JSON.stringify(decoded));
+    const handleJDecoded = decode(handleJ);
+    console.log('handleJDecoded', JSON.stringify(handleJDecoded));
+    logger.info('handleJDecoded', JSON.stringify(handleJDecoded));
+    return decoded;
+  } catch (err) {
+    console.log('ERROR handlejwt', err);
+    logger.info('ERROR handlejwt', err);
+  }
+};
 
 const fetchUsersFromToken = ({ sub, email }) =>
   findUsersByEmail(email).then(users => ({
