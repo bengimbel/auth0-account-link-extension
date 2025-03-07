@@ -43,7 +43,7 @@ const handleJwt = async (childtoken) => {
       logger.info('NO KEY');
       return false;
     }
-
+    console.log(config('AUTH0_CLIENT_ID'), `${config('AUTH0_DOMAIN')}/`);
     // this token is issued by the RTA
     const verifyOptions = {
       audience: config('AUTH0_CLIENT_ID'),
