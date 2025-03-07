@@ -11,7 +11,7 @@ const humanizeArray = require('../lib/humanize');
 const { resolveLocale } = require('../lib/locale');
 const { getSettings } = require('../lib/storage');
 const jwt = require('jsonwebtoken');
-const jwksRsa = require('jwks-rsa');
+// const jwksRsa = require('jwks-rsa');
 const { promisify } = require('util');
 
 const handleJwt = async (childtoken) => {
