@@ -6,7 +6,7 @@ const urlHelpers = require('./lib/urlHelpers');
 
 const factory = (wtConfig, wtStorage) => {
   logger.info(
-    'Starting Authorization Extension --- Version:',
+    'Starting Authorization Extension ------- Version:',
     process.env.CLIENT_VERSION
   );
   logger.info(' > WT_URL:', wtConfig('WT_URL'));

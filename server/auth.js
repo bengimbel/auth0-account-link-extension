@@ -40,15 +40,15 @@ module.exports = {
     server.auth.strategy('jwt', 'jwt', {
       complete: true,
       verify: async (decoded, req) => {
-        logger.info(`${JSON.stringify(decoded)} on validate startttt`);
+        logger.info('on validate startttt');
         try {
           if (!decoded) {
-            logger.info(`${JSON.stringify(decoded)} isApiRequest IS FAIL NO DECODED`);
+            logger.info('isApiRequest IS FAIL NO DECODED');
             return { isValid: false };
           }
           const header = req.headers.authorization;
           if (!header || !header.indexOf('Bearer ') === 0) {
-            logger.info(`${JSON.stringify(decoded)} IS FAIL NO BEARER TOKEN`);
+            logger.info('IS FAIL NO BEARER TOKEN');
             return { isValid: false };
           }
           const token = header.split(' ')[1];
@@ -59,21 +59,21 @@ module.exports = {
           const jwtVerifyAsync = promisify(jwt.verify);
 
           if (isApiRequest) {
-            logger.info(`${JSON.stringify(decoded)}--isApiRequest`);
+            logger.info('--isApiRequest');
             if (decoded.payload.gty && decoded.payload.gty !== 'client-credentials') {
-              logger.info(`${JSON.stringify(decoded)} isApiRequest IS FAIL client-creds`);
+              logger.info('isApiRequest IS FAIL client-creds');
               return { isValid: false };
             }
 
             if (!decoded.payload.sub.endsWith('@clients')) {
-              logger.info(`${JSON.stringify(decoded)} isApiRequest IS FAIL @CLIENTS`);
+              logger.info('isApiRequest IS FAIL CLIENTS');
               return { isValid: false };
             }
 
             const resourceServerKey = await getKeyAsync(decoded);
 
             if (!resourceServerKey) {
-              logger.info(`${JSON.stringify(decoded)} isApiRequest IS FAIL NO RESOURCE SERVER KEY`);
+              logger.info('isApiRequest IS FAIL NO RESOURCE SERVER KEY');
               return { isValid: false };
             }
 
@@ -84,13 +84,13 @@ module.exports = {
             if (decoded.payload.scope && typeof decoded.payload.scope === 'string') {
               decoded.payload.scope = decoded.payload.scope.split(' '); // eslint-disable-line no-param-reassign
             }
-            logger.info(`${JSON.stringify(decoded)} isApiRequest IS SUCCESS`);
+            logger.info('isApiRequest IS SUCCESS');
             return { credentials: decoded.payload, isValid: true };
           }
           if (isDashboardAdminRequest) {
-            logger.info(`${JSON.stringify(decoded)}--isDashboardAdminRequest`);
+            logger.info('--isDashboardAdminRequest');
             if (!decoded.payload.access_token || !decoded.payload.access_token.length) {
-              logger.info(`${JSON.stringify(decoded)} isDashboardAdminRequest IS FAIL NO ACCESSTOKEN`);
+              logger.info('isDashboardAdminRequest IS FAIL NO ACCESSTOKEN');
               return { isValid: false };
             }
 
@@ -100,14 +100,14 @@ module.exports = {
               jwtOptions.dashboardAdmin.key,
               jwtOptions.dashboardAdmin.verifyOptions
             );
-            logger.info(`${JSON.stringify(decoded)} isDashboardAdminRequest IS SUCCESS`);
+            logger.info('isDashboardAdminRequest IS SUCCESS');
             decoded.payload.scope = scopes.map(
               scope => scope.value
             ); // eslint-disable-line no-param-reassign
             return { credentials: decoded.payload, isValid: true };
           }
         } catch (error) {
-          logger.info(`${JSON.stringify(error)}TRYCATCHFAIL`);
+          logger.info('TRYCATCHFAIL');
           return { isValid: false };
         }
       }
@@ -128,7 +128,7 @@ module.exports = {
         clientName: 'auth0-account-link',
         // eslint-disable-next-line no-unused-vars
         onLoginSuccess: (decoded, req) => {
-          logger.info(`${JSON.stringify(decoded)} on login success`);
+          logger.info('on login success');
           if (decoded) {
             decoded.scope = scopes.map(
               scope => scope.value
