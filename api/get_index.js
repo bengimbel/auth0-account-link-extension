@@ -10,49 +10,44 @@ const getIdentityProviderPublicName = require('../lib/idProviders');
 const humanizeArray = require('../lib/humanize');
 const { resolveLocale } = require('../lib/locale');
 const { getSettings } = require('../lib/storage');
-// const jwt = require('jsonwebtoken');
-// const jwksRsa = require('jwks-rsa');
-// const { promisify } = require('util');
+const jwt = require('jsonwebtoken');
+const jwksRsa = require('jwks-rsa');
+const { promisify } = require('util');
 
-// const jwtOptions = {
-//   dashboardAdmin: {
-//     key: config('EXTENSION_SECRET'),
-//     verifyOptions: {
-//       audience: 'urn:api-account-linking',
-//       issuer: config('PUBLIC_WT_URL'),
-//       algorithms: ['HS256']
-//     }
-//   },
-//   resourceServer: {
-//     key: jwksRsa.hapiJwt2KeyAsync({
-//       cache: true,
-//       rateLimit: true,
-//       jwksRequestsPerMinute: 2,
-//       jwksUri: `https://${config('AUTH0_DOMAIN')}/.well-known/jwks.json`
-//     }),
-//     verifyOptions: {
-//       audience: 'urn:auth0-account-linking-api',
-//       issuer: `https://${config('AUTH0_DOMAIN')}/`,
-//       algorithms: ['RS256']
-//     }
-//   }
-// };
+const handleJwt = async (decoded, childtoken) => {
+  try {
+    const jwtVerifyAsync = promisify(jwt.verify);
+    const getKey = jwksRsa.hapiJwt2Key({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: process.env.NODE_ENV === 'test' ? 10 : 2,
+      jwksUri: `${config('AUTH0_RTA')}/.well-known/jwks.json`
+    });
 
-// const handleJwt = async (token) => {
-//   const getKeyAsync = promisify(jwtOptions.resourceServer.key);
-//   const jwtVerifyAsync = promisify(jwt.verify);
-//   try {
-//     const resourceServerKey = await getKeyAsync(token);
-//     await jwtVerifyAsync(
-//       token,
-//       resourceServerKey,
-//       jwtOptions.resourceServer.verifyOptions
-//     );
-//   } catch (error) {
-//     console.log('ERROR handlejwt', error);
-//     logger.info('ERROR handlejwt', error);
-//   }
-// };
+    const getKeyAsync = promisify(getKey);
+    const key = await getKeyAsync(decoded);
+    console.log('key session login/callback');
+    logger.info('key session login/callback');
+    if (!key) {
+      console.log('NO KEY');
+      logger.info('NO KEY');
+      return false;
+    }
+
+    // this token is issued by the RTA
+    const verifyOptions = {
+      audience: config('PUBLIC_WT_URL'),
+      issuer: `${config('AUTH0_RTA')}/`,
+      algorithms: ['RS256']
+    };
+
+    await jwtVerifyAsync(childtoken, key, verifyOptions);
+    return true;
+  } catch (error) {
+    logger.info(`${error} ERR decode`);
+    console.log(`${error} error decode`);
+  }
+};
 
 const decodeToken = token =>
   new Promise((resolve, reject) => {
@@ -112,6 +107,18 @@ module.exports = () => ({
       logger.info(`${params.child_token} : Start decoding child token`);
       console.log(`${params.child_token} : Start decoding child token`);
       const token = await decodeToken(params.child_token);
+      const whatamI = await handleJwt(token, params.child_token);
+      console.log('whatamI', whatamI);
+      logger.info('whatamI', whatamI);
+      const getKey = jwksRsa.hapiJwt2Key({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: process.env.NODE_ENV === 'test' ? 10 : 2,
+        jwksUri: `${config('AUTH0_RTA')}/.well-known/jwks.json`
+      });
+  
+      const getKeyAsync = promisify(getKey);
+      const key = await getKeyAsync(token);
       logger.info(`${JSON.stringify(token)} child token decoded`);
       console.log(`${JSON.stringify(token)} child token decoded`);
       try {
