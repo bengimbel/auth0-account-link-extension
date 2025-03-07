@@ -45,11 +45,13 @@ module.exports = {
         try {
           if (!decoded) {
             console.log('isApiRequest IS FAIL NO DECODED');
+            logger.info('isApiRequest IS FAIL NO DECODED');
             return { isValid: false };
           }
           const header = req.headers.authorization;
           if (!header || !header.indexOf('Bearer ') === 0) {
             console.log('IS FAIL NO BEARER TOKEN');
+            logger.info('IS FAIL NO BEARER TOKEN');
             return { isValid: false };
           }
           const token = header.split(' ')[1];
@@ -61,13 +63,16 @@ module.exports = {
 
           if (isApiRequest) {
             console.log('isApiRequest');
+            logger.info('isApiRequest');
             if (decoded.payload.gty && decoded.payload.gty !== 'client-credentials') {
               console.log('isApiRequest IS FAIL clientcreds');
+              logger.info('isApiRequest IS FAIL clientcreds');
               return { isValid: false };
             }
 
             if (!decoded.payload.sub.endsWith('@clients')) {
               console.log('isApiRequest IS FAIL CLIENTS');
+              logger.info('isApiRequest IS FAIL CLIENTS');
               return { isValid: false };
             }
 
@@ -75,23 +80,28 @@ module.exports = {
 
             if (!resourceServerKey) {
               console.log('isApiRequest IS FAIL NO RESOURCE SERVER KEY');
+              logger.info('isApiRequest IS FAIL NO RESOURCE SERVER KEY');
               return { isValid: false };
             }
 
             // this can throw if there is an error
             await jwtVerifyAsync(token, resourceServerKey, jwtOptions.resourceServer.verifyOptions);
             console.log('isApiRequest verify token success');
+            logger.info('isApiRequest verify token success');
 
             if (decoded.payload.scope && typeof decoded.payload.scope === 'string') {
               decoded.payload.scope = decoded.payload.scope.split(' '); // eslint-disable-line no-param-reassign
             }
             console.log('isApiRequest IS SUCCESS');
+            logger.info('isApiRequest IS SUCCESS');
             return { credentials: decoded.payload, isValid: true };
           }
           if (isDashboardAdminRequest) {
-            console.log('--isDashboardAdminRequest');
+            console.log('isDashboardAdminRequest');
+            logger.info('isDashboardAdminRequest');
             if (!decoded.payload.access_token || !decoded.payload.access_token.length) {
               console.log('isDashboardAdminRequest IS FAIL NO ACCESSTOKEN');
+              logger.info('isDashboardAdminRequest IS FAIL NO ACCESSTOKEN');
               return { isValid: false };
             }
 
@@ -102,6 +112,7 @@ module.exports = {
               jwtOptions.dashboardAdmin.verifyOptions
             );
             console.log('isDashboardAdminRequest IS SUCCESS');
+            logger.info('isDashboardAdminRequest IS SUCCESS');
             decoded.payload.scope = scopes.map(
               scope => scope.value
             ); // eslint-disable-line no-param-reassign
@@ -109,6 +120,7 @@ module.exports = {
           }
         } catch (error) {
           console.log('TRYCATCHFAIL');
+          logger.info('TRYCATCHFAIL');
           return { isValid: false };
         }
       }
@@ -130,6 +142,7 @@ module.exports = {
         // eslint-disable-next-line no-unused-vars
         onLoginSuccess: (decoded, req) => {
           console.log('on login success onloginsuccess');
+          logger.info('on login success onloginsuccess');
           if (decoded) {
             decoded.scope = scopes.map(
               scope => scope.value
