@@ -17,6 +17,8 @@ const { promisify } = require('util');
 const handleJwt = async (childtoken) => {
   try {
     const decoded = decode(childtoken, { complete: true });
+    console.log(decoded, 'decoded');
+    logger.info(decoded, 'decoded');
     const jwtVerifyAsync = promisify(jwt.verify);
     const getKey = jwksRsa.hapiJwt2Key({
       cache: true,
@@ -27,6 +29,8 @@ const handleJwt = async (childtoken) => {
 
     const getKeyAsync = promisify(getKey);
     const key = await getKeyAsync(decoded);
+    console.log(key, 'key');
+    logger.info(`${key} key`);
     console.log('key session login/callback');
     logger.info('key session login/callback');
     if (!key) {
