@@ -14,8 +14,9 @@ const jwt = require('jsonwebtoken');
 const jwksRsa = require('jwks-rsa');
 const { promisify } = require('util');
 
-const handleJwt = async (decoded, childtoken) => {
+const handleJwt = async (childtoken) => {
   try {
+    const decoded = decode(childtoken, { complete: true });
     const jwtVerifyAsync = promisify(jwt.verify);
     const getKey = jwksRsa.hapiJwt2Key({
       cache: true,
@@ -49,14 +50,14 @@ const handleJwt = async (decoded, childtoken) => {
   }
 };
 
-const decodeToken = token =>
-  new Promise((resolve, reject) => {
-    try {
-      resolve(decode(token));
-    } catch (e) {
-      reject(e);
-    }
-  });
+// const decodeToken = token =>
+//   new Promise((resolve, reject) => {
+//     try {
+//       resolve(decode(token));
+//     } catch (e) {
+//       reject(e);
+//     }
+//   });
 
 // const decodeToken2 = async (token) => {
 //   try {
@@ -108,8 +109,8 @@ module.exports = () => ({
       logger.info('Start decoding child token');
       logger.info(`${params.child_token} : Start decoding child token`);
       console.log(`${params.child_token} : Start decoding child token`);
-      const token = await decodeToken(params.child_token);
-      const whatamI = await handleJwt(token, params.child_token);
+      const token = await handleJwt(params.child_token);
+      const whatamI = await handleJwt(params.child_token);
       console.log('whatamI', whatamI);
       logger.info('whatamI', whatamI);
       logger.info(`${JSON.stringify(token)} child token decoded`);
