@@ -106,8 +106,6 @@ module.exports = () => ({
     const stylesheetTag = stylesheetHelper.tag('link');
     const customCSSTag = stylesheetHelper.tag(config('CUSTOM_CSS'), true);
     const params = req.query;
-    logger.info(`${JSON.stringify(req.query)} : QUERY`);
-    console.log(`${JSON.stringify(req.query)} : QUERY`);
     const dynamicSettings = {};
 
     if (params.locale) dynamicSettings.locale = params.locale;
