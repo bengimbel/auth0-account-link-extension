@@ -18,12 +18,12 @@ const handleJwt = async (childtoken) => {
   try {
     // Decode the token with the complete option to get the header
     const decoded = decode(childtoken, { complete: true });
-    console.log(decoded, 'decoded');
-    logger.info(decoded, 'decoded');
+    console.log(`${JSON.stringify(decoded)} decoded`);
+    logger.info(`${JSON.stringify(decoded)} decoded`);
     // Extract the header from the decoded token
     const header = decoded.header;
-    console.log(header, 'header');
-    logger.info(header, 'header');
+    console.log(`${JSON.stringify(header)} header`);
+    logger.info(`${JSON.stringify(header)} header`);
 
     const jwtVerifyAsync = promisify(jwt.verify);
     const getKey = jwksRsa.hapiJwt2Key({
@@ -35,7 +35,7 @@ const handleJwt = async (childtoken) => {
 
     const getKeyAsync = promisify(getKey);
     const key = await getKeyAsync(decoded);
-    console.log(key, 'key');
+    console.log(`${key} key`);
     logger.info(`${key} key`);
     console.log('key session login/callback');
     logger.info('key session login/callback');
