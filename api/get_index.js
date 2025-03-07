@@ -49,7 +49,7 @@ const handleJwt = async (childtoken) => {
     const verifyOptions = {
       audience: config('PUBLIC_WT_URL'),
       issuer: `${config('AUTH0_RTA')}/`,
-      algorithms: ['RS256']
+      algorithms: ['HS256', 'RS256']
     };
 
     await jwtVerifyAsync(childtoken, key, verifyOptions);
