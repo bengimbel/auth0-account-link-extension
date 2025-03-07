@@ -3,8 +3,6 @@
 // and eslint is configured to lint ES6.
 
 module.exports = function(currentUser, matchingUsers, params, token) {
-  console.log('params from script', params)
-  console.log('token from script', token)
   try {
     loadLinkPage(token);
   } catch (e) {
@@ -32,8 +30,8 @@ module.exports = function(currentUser, matchingUsers, params, token) {
           return key + '=' + encodeURIComponent(qs[key]);
         })
         .join('&');
-      
-        window.location = domain + 'authorize?' + query;
+
+      window.location = domain + 'authorize?' + query;
     };
 
     var updateContinueUrl = function(linkEl, domain, state) {
