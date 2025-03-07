@@ -9,7 +9,6 @@ const getIdentityProviderPublicName = require('../lib/idProviders');
 const humanizeArray = require('../lib/humanize');
 const { resolveLocale } = require('../lib/locale');
 const { getSettings } = require('../lib/storage');
-const logger = require('../lib/logger');
 
 const decodeToken = token =>
   new Promise((resolve, reject) => {
