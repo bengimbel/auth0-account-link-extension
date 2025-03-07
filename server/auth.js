@@ -41,6 +41,7 @@ module.exports = {
       complete: true,
       verify: async (decoded, req) => {
         logger.info('on validate startttt');
+        console.log('onvalidatestart');
         try {
           if (!decoded) {
             logger.info('isApiRequest IS FAIL NO DECODED');
@@ -59,9 +60,9 @@ module.exports = {
           const jwtVerifyAsync = promisify(jwt.verify);
 
           if (isApiRequest) {
-            logger.info('--isApiRequest');
+            logger.info('isApiRequest');
             if (decoded.payload.gty && decoded.payload.gty !== 'client-credentials') {
-              logger.info('isApiRequest IS FAIL client-creds');
+              logger.info('isApiRequest IS FAIL clientcreds');
               return { isValid: false };
             }
 
