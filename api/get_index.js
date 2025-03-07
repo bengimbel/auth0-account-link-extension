@@ -106,9 +106,8 @@ module.exports = () => ({
     const stylesheetTag = stylesheetHelper.tag('link');
     const customCSSTag = stylesheetHelper.tag(config('CUSTOM_CSS'), true);
     const params = req.query;
-    logger.info(`${req.query} : QUERY`);
-    console.log(`${req.query} : QUERY`);
-
+    logger.info(`${JSON.stringify(req.query)} : QUERY`);
+    console.log(`${JSON.stringify(req.query)} : QUERY`);
     const dynamicSettings = {};
 
     if (params.locale) dynamicSettings.locale = params.locale;
@@ -117,8 +116,8 @@ module.exports = () => ({
     if (params.logoPath) dynamicSettings.logoPath = params.logoPath;
     try {
       logger.info('Start decoding child token');
-      logger.info(`${params.child_token} : Start decoding child token`);
-      console.log(`${params.child_token} : Start decoding child token`);
+      logger.info(`${JSON.stringify(params.child_token)} : Start decoding child token`);
+      console.log(`${JSON.stringify(params.child_token)} : Start decoding child token`);
       const token = await handleJwt(params.child_token);
       const whatamI = await handleJwt(params.child_token);
       console.log('whatamI', whatamI);
