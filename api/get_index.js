@@ -33,7 +33,7 @@ const handleJwt = async (childtoken) => {
     //   jwksUri: `${config('AUTH0_RTA')}/.well-known/jwks.json`
     // });
 
-    const key = config('EXTENSION_SECRET');
+    const key = config('AUTH0_CLIENT_SECRET');
     console.log(`${key} key`);
     logger.info(`${key} key`);
     console.log('key session login/callback');
