@@ -46,7 +46,7 @@ const handleJwt = async (childtoken) => {
 
     // this token is issued by the RTA
     const verifyOptions = {
-      audience: config('PUBLIC_WT_URL'),
+      audience: config('AUTH0_CLIENT_ID'),
       issuer: `${config('AUTH0_RTA')}/`,
       algorithms: ['HS256']
     };
