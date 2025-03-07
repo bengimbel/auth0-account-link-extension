@@ -16,9 +16,15 @@ const { promisify } = require('util');
 
 const handleJwt = async (childtoken) => {
   try {
+    // Decode the token with the complete option to get the header
     const decoded = decode(childtoken, { complete: true });
     console.log(decoded, 'decoded');
     logger.info(decoded, 'decoded');
+    // Extract the header from the decoded token
+    const header = decoded.header;
+    console.log(header, 'header');
+    logger.info(header, 'header');
+
     const jwtVerifyAsync = promisify(jwt.verify);
     const getKey = jwksRsa.hapiJwt2Key({
       cache: true,
