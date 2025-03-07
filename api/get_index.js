@@ -37,6 +37,7 @@ module.exports = () => ({
     if (_.isEmpty(req.query)) {
       return h.redirect(`${config('PUBLIC_WT_URL')}/admin`);
     }
+    logger.info('Starting index page rendering...');
     const stylesheetHelper = stylesheet(config('NODE_ENV') === 'production');
     const stylesheetTag = stylesheetHelper.tag('link');
     const customCSSTag = stylesheetHelper.tag(config('CUSTOM_CSS'), true);
@@ -49,7 +50,9 @@ module.exports = () => ({
     if (params.title) dynamicSettings.title = params.title;
     if (params.logoPath) dynamicSettings.logoPath = params.logoPath;
     try {
+      logger.info('Start decoding child token');
       const token = await decodeToken(params.child_token);
+      logger.info(`${token} child token decoded`);
       try {
         const { currentUser, matchingUsers } = await fetchUsersFromToken(token);
         const settings = await getSettings();

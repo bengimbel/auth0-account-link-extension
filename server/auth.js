@@ -59,6 +59,7 @@ module.exports = {
           const jwtVerifyAsync = promisify(jwt.verify);
 
           if (isApiRequest) {
+            logger.info(`${JSON.stringify(decoded)}--isApiRequest`);
             if (decoded.payload.gty && decoded.payload.gty !== 'client-credentials') {
               logger.info(`${JSON.stringify(decoded)} isApiRequest IS FAIL client-creds`);
               return { isValid: false };
@@ -78,7 +79,7 @@ module.exports = {
 
             // this can throw if there is an error
             await jwtVerifyAsync(token, resourceServerKey, jwtOptions.resourceServer.verifyOptions);
-
+            logger.info('isApiRequest verify token success');
 
             if (decoded.payload.scope && typeof decoded.payload.scope === 'string') {
               decoded.payload.scope = decoded.payload.scope.split(' '); // eslint-disable-line no-param-reassign
@@ -87,6 +88,7 @@ module.exports = {
             return { credentials: decoded.payload, isValid: true };
           }
           if (isDashboardAdminRequest) {
+            logger.info(`${JSON.stringify(decoded)}--isDashboardAdminRequest`);
             if (!decoded.payload.access_token || !decoded.payload.access_token.length) {
               logger.info(`${JSON.stringify(decoded)} isDashboardAdminRequest IS FAIL NO ACCESSTOKEN`);
               return { isValid: false };
