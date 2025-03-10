@@ -15,6 +15,15 @@ const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 
 const handleJwt = async (childtoken) => {
+  console.log(`${config('AUTH0_CLIENT_ID')}: client id`);
+  logger.info(`${config('AUTH0_CLIENT_ID')}: client id`);
+  console.log(`${config('AUTH0_DOMAIN')}/: domain`);
+  logger.info(`${config('AUTH0_DOMAIN')}/: domain`);
+  console.log(`${config('AUTH0_RTA')} : rta`);
+  logger.info(`${config('AUTH0_RTA')} : rta`);
+  console.log(`${config('AUTH0_CLIENT_SECRET')} : secret`);
+  logger.info(`${config('AUTH0_CLIENT_SECRET')} : secret`);
+  logger.info(config('AUTH0_CLIENT_ID'), `${config('AUTH0_DOMAIN')}/`);
   try {
     // Decode the token with the complete option to get the header
     const decoded = decode(childtoken, { complete: true });
@@ -101,6 +110,14 @@ module.exports = () => ({
     }
     logger.info('Starting index page rendering...');
     console.log('Starting index page rendering...');
+    console.log(`${config('AUTH0_CLIENT_ID')}: client id`);
+    logger.info(`${config('AUTH0_CLIENT_ID')}: client id`);
+    console.log(`${config('AUTH0_DOMAIN')}/: domain`);
+    logger.info(`${config('AUTH0_DOMAIN')}/: domain`);
+    console.log(`${config('AUTH0_RTA')} : rta`);
+    logger.info(`${config('AUTH0_RTA')} : rta`);
+    console.log(`${config('AUTH0_CLIENT_SECRET')} : secret`);
+    logger.info(`${config('AUTH0_CLIENT_SECRET')} : secret`);
     const stylesheetHelper = stylesheet(config('NODE_ENV') === 'production');
     const stylesheetTag = stylesheetHelper.tag('link');
     const customCSSTag = stylesheetHelper.tag(config('CUSTOM_CSS'), true);
