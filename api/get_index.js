@@ -61,7 +61,7 @@ const handleJwt = async (childtoken) => {
     };
 
     await jwtVerifyAsync(childtoken, key, verifyOptions);
-    return true;
+    return decoded;
   } catch (error) {
     logger.info(`${error} ERR decode`);
     console.log(`${error} error decode`);
