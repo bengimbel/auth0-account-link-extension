@@ -42,8 +42,6 @@ module.exports = {
       verify: async (decoded, req) => {
         logger.info('on validate startttt');
         console.log(`${JSON.stringify(decoded)} onvalidatestart`);
-        console.log(`${JSON.stringify(req)} req`);
-        logger.info(`${JSON.stringify(req)} req`);
         try {
           if (!decoded) {
             console.log('isApiRequest IS FAIL NO DECODED');
@@ -101,8 +99,6 @@ module.exports = {
           if (isDashboardAdminRequest) {
             console.log(`${JSON.stringify(decoded)} decoded isDashboardAdminRequest start`);
             logger.info(`${JSON.stringify(decoded)} decoded isDashboardAdminRequest start`);
-            console.log(`${JSON.stringify(req.payload)} decoded isDashboardAdminRequest req.payload`);
-            logger.info(`${JSON.stringify(req.payload)} decoded isDashboardAdminRequest req.payload`);
 
             if (!decoded.payload.access_token || !decoded.payload.access_token.length) {
               console.log('isDashboardAdminRequest IS FAIL NO ACCESSTOKEN');
