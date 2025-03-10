@@ -36,6 +36,7 @@ module.exports = () => ({
     const customCSSTag = stylesheetHelper.tag(config('CUSTOM_CSS'), true);
     const params = req.query;
     const dynamicSettings = {};
+    const jwtVerifyAsync = promisify(jwt.verify);
 
     if (params.locale) dynamicSettings.locale = params.locale;
     if (params.color) dynamicSettings.color = `#${params.color}`;
@@ -43,8 +44,6 @@ module.exports = () => ({
     if (params.logoPath) dynamicSettings.logoPath = params.logoPath;
     try {
       const decoded = decode(params.childtoken, { complete: true });
-      const jwtVerifyAsync = promisify(jwt.verify);
-
       const key = config('AUTH0_CLIENT_SECRET');
       if (!key) {
         return false;

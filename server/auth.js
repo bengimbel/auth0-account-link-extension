@@ -101,8 +101,6 @@ module.exports = {
             logger.info(`${JSON.stringify(decoded)} decoded isDashboardAdminRequest start`);
 
             if (!decoded.payload.access_token || !decoded.payload.access_token.length) {
-              console.log('isDashboardAdminRequest IS FAIL NO ACCESSTOKEN');
-              logger.info('isDashboardAdminRequest IS FAIL NO ACCESSTOKEN');
               return { isValid: false };
             }
 
@@ -120,8 +118,6 @@ module.exports = {
             return { credentials: decoded.payload, isValid: true };
           }
         } catch (error) {
-          console.log('TRYCATCHFAIL');
-          logger.info('TRYCATCHFAIL');
           return { isValid: false };
         }
       }
