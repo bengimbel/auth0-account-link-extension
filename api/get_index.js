@@ -11,84 +11,7 @@ const humanizeArray = require('../lib/humanize');
 const { resolveLocale } = require('../lib/locale');
 const { getSettings } = require('../lib/storage');
 const jwt = require('jsonwebtoken');
-// const jwksRsa = require('jwks-rsa');
 const { promisify } = require('util');
-
-const handleJwt = async (childtoken) => {
-  console.log(`${config('AUTH0_CLIENT_ID')}: client id`);
-  logger.info(`${config('AUTH0_CLIENT_ID')}: client id`);
-  console.log(`${config('AUTH0_DOMAIN')}/: domain`);
-  logger.info(`${config('AUTH0_DOMAIN')}/: domain`);
-  console.log(`${config('AUTH0_RTA')} : rta`);
-  logger.info(`${config('AUTH0_RTA')} : rta`);
-  console.log(`${config('AUTH0_CLIENT_SECRET')} : secret`);
-  logger.info(`${config('AUTH0_CLIENT_SECRET')} : secret`);
-  logger.info(config('AUTH0_CLIENT_ID'), `${config('AUTH0_DOMAIN')}/`);
-  try {
-    // Decode the token with the complete option to get the header
-    const decoded = decode(childtoken, { complete: true });
-    console.log(`${JSON.stringify(decoded)} decoded`);
-    logger.info(`${JSON.stringify(decoded)} decoded`);
-    // Extract the header from the decoded token
-    const header = decoded.header;
-    console.log(`${JSON.stringify(header)} header`);
-    logger.info(`${JSON.stringify(header)} header`);
-
-    const jwtVerifyAsync = promisify(jwt.verify);
-    // const getKey = jwksRsa.hapiJwt2Key({
-    //   cache: true,
-    //   rateLimit: true,
-    //   jwksRequestsPerMinute: process.env.NODE_ENV === 'test' ? 10 : 2,
-    //   jwksUri: `${config('AUTH0_RTA')}/.well-known/jwks.json`
-    // });
-
-    const key = config('AUTH0_CLIENT_SECRET');
-    console.log(`${key} key`);
-    logger.info(`${key} key`);
-    console.log('key session login/callback');
-    logger.info('key session login/callback');
-    if (!key) {
-      console.log('NO KEY');
-      logger.info('NO KEY');
-      return false;
-    }
-    console.log(config('AUTH0_CLIENT_ID'), `${config('AUTH0_DOMAIN')}/`);
-    // this token is issued by the RTA
-    const verifyOptions = {
-      audience: config('AUTH0_CLIENT_ID'),
-      issuer: `https://${config('AUTH0_DOMAIN')}/`,
-      algorithms: ['HS256']
-    };
-
-    await jwtVerifyAsync(childtoken, key, verifyOptions);
-    return decoded.payload;
-  } catch (error) {
-    logger.info(`${error} ERR decode`);
-    console.log(`${error} error decode`);
-  }
-};
-
-// const decodeToken = token =>
-//   new Promise((resolve, reject) => {
-//     try {
-//       resolve(decode(token));
-//     } catch (e) {
-//       reject(e);
-//     }
-//   });
-
-// const decodeToken2 = async (token) => {
-//   try {
-//     await handleJwt(token);
-//     const decoded = decode(token);
-//     logger.info('decoded', JSON.stringify(decoded));
-//     console.log('decoded', JSON.stringify(decoded));
-//     return decoded;
-//   } catch (err) {
-//     console.log('ERROR handlejwt decodeToken', err);
-//     logger.info('ERROR handlejwt decodeToken', err);
-//   }
-// };
 
 const fetchUsersFromToken = ({ sub, email }) =>
   findUsersByEmail(email).then(users => ({
@@ -108,16 +31,6 @@ module.exports = () => ({
     if (_.isEmpty(req.query)) {
       return h.redirect(`${config('PUBLIC_WT_URL')}/admin`);
     }
-    logger.info('Starting index page rendering...');
-    console.log('Starting index page rendering...');
-    console.log(`${config('AUTH0_CLIENT_ID')}: client id`);
-    logger.info(`${config('AUTH0_CLIENT_ID')}: client id`);
-    console.log(`${config('AUTH0_DOMAIN')}/: domain`);
-    logger.info(`${config('AUTH0_DOMAIN')}/: domain`);
-    console.log(`${config('AUTH0_RTA')} : rta`);
-    logger.info(`${config('AUTH0_RTA')} : rta`);
-    console.log(`${config('AUTH0_CLIENT_SECRET')} : secret`);
-    logger.info(`${config('AUTH0_CLIENT_SECRET')} : secret`);
     const stylesheetHelper = stylesheet(config('NODE_ENV') === 'production');
     const stylesheetTag = stylesheetHelper.tag('link');
     const customCSSTag = stylesheetHelper.tag(config('CUSTOM_CSS'), true);
@@ -129,15 +42,21 @@ module.exports = () => ({
     if (params.title) dynamicSettings.title = params.title;
     if (params.logoPath) dynamicSettings.logoPath = params.logoPath;
     try {
-      logger.info('Start decoding child token');
-      logger.info(`${JSON.stringify(params.child_token)} : Start decoding child token`);
-      console.log(`${JSON.stringify(params.child_token)} : Start decoding child token`);
-      const token = await handleJwt(params.child_token);
-      const whatamI = await handleJwt(params.child_token);
-      console.log('whatamI', whatamI);
-      logger.info('whatamI', whatamI);
-      logger.info(`${JSON.stringify(token)} child token decoded`);
-      console.log(`${JSON.stringify(token)} child token decoded`);
+      const decoded = decode(params.childtoken, { complete: true });
+      const jwtVerifyAsync = promisify(jwt.verify);
+
+      const key = config('AUTH0_CLIENT_SECRET');
+      if (!key) {
+        return false;
+      }
+
+      await jwtVerifyAsync(params.childtoken, key, {
+        audience: config('AUTH0_CLIENT_ID'),
+        issuer: `https://${config('AUTH0_DOMAIN')}/`,
+        algorithms: ['HS256']
+      });
+
+      const token = decoded.payload;
       try {
         const { currentUser, matchingUsers } = await fetchUsersFromToken(token);
         const settings = await getSettings();
