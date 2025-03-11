@@ -1,4 +1,5 @@
 const avatarUrl = require('../../lib/avatar');
+const logger = require('../../lib/logger');
 
 module.exports = () => ({
   method: 'GET',
@@ -6,12 +7,15 @@ module.exports = () => ({
   options: {
     auth: {
       strategies: ['jwt'],
-      // scope: ['profile'],
-      scope: ['yar']
+      scope: ['profile', 'email']
     }
   },
-  handler: (req, h) => h.response({
-    email: req.auth.credentials.email,
-    avatar: avatarUrl(req.auth.credentials.email)
-  }).code(200)
+  handler: (req, h) => {
+    console.log(`${req.auth}: req.auth.credentials`);
+    logger.info(`${req.auth}: req.auth.credentials`);
+    return h.response({
+      email: req.auth.credentials.email,
+      avatar: avatarUrl(req.auth.credentials.email)
+    }).code(200);
+  }
 });
