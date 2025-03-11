@@ -54,11 +54,18 @@ module.exports = () => ({
         issuer: `https://${config('AUTH0_DOMAIN')}/`,
         algorithms: ['HS256']
       });
-
+      console.log(`${JSON.stringify(decoded)}, 'decoded'`);
+      logger.info(`Decoded token: ${JSON.stringify(decoded)}`);
       const token = decoded.payload;
+      console.log(`${JSON.stringify(token)}, 'token'`);
+      logger.info(`token: ${JSON.stringify(token)}`);
       try {
         const { currentUser, matchingUsers } = await fetchUsersFromToken(token);
+        console.log(`${JSON.stringify(currentUser)}-${JSON.stringify(matchingUsers)}, 'users'`);
+        logger.info(`${JSON.stringify(currentUser)}-${JSON.stringify(matchingUsers)}, 'users'`);
         const settings = await getSettings();
+        console.log('got setttings');
+        logger.info('got setttings');
         const userMetadata = (matchingUsers[0] && matchingUsers[0].user_metadata) || {};
         const locale = typeof userMetadata.locale === 'string' ? userMetadata.locale : settings.locale;
         const t = await resolveLocale(locale);
@@ -70,6 +77,8 @@ module.exports = () => ({
         const rawIdentities = matchingUsers.length > 0 ? [matchingUsers[0].identities[0]] : [];
         const identities = rawIdentities.map(id => id.provider).map(getIdentityProviderPublicName);
         const humanizedIdentities = humanizeArray(identities, t('or'));
+        console.log('got to temaplte');
+        logger.info('got to temaplte');
         const template = await indexTemplate({
           dynamicSettings,
           stylesheetTag,
