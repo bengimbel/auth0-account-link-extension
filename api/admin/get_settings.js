@@ -5,7 +5,12 @@ const { getSettings, getLocales } = require('../../lib/storage');
 module.exports = () => ({
   method: 'GET',
   options: {
-    auth: 'jwt'
+    auth: {
+      stratigies: ['jwt'],
+      access: {
+        scope: ['profile']
+      }
+    }
   },
   path: '/admin/settings',
   handler: async (req, h) => {

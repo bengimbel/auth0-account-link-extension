@@ -4,7 +4,12 @@ module.exports = () => ({
   method: 'GET',
   path: '/admin/user',
   options: {
-    auth: 'jwt'
+    auth: {
+      stratigies: ['jwt'],
+      access: {
+        scope: ['profile']
+      }
+    }
   },
   handler: (req, h) => h.response({
     email: req.auth.credentials.email,

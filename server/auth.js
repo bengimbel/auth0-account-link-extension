@@ -8,7 +8,7 @@ const config = require('../lib/config');
 const plugin = require('../lib/session');
 const logger = require('../lib/logger');
 
-const scopes = [{ value: 'openid' }, { value: 'profile' }];
+const scopes = [{ value: 'openid' }, { value: 'profile' }, { value: 'email' }];
 
 module.exports = {
   name: 'auth',
@@ -110,11 +110,12 @@ module.exports = {
               jwtOptions.dashboardAdmin.key,
               jwtOptions.dashboardAdmin.verifyOptions
             );
-            console.log('isDashboardAdminRequest IS SUCCESS');
-            logger.info('isDashboardAdminRequest IS SUCCESS');
+
             decoded.payload.scope = scopes.map(
               scope => scope.value
             ); // eslint-disable-line no-param-reassign
+            console.log(`${decoded} isDashboardAdminRequest IS SUCCESS`);
+            logger.info(`${decoded} isDashboardAdminRequest IS SUCCESS`);
             return { credentials: decoded.payload, isValid: true };
           }
         } catch (error) {
