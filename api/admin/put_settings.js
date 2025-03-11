@@ -10,10 +10,8 @@ module.exports = () => ({
   method: 'PUT',
   options: {
     auth: {
-      stratigies: ['jwt'],
-      access: {
-        scope: ['profile']
-      }
+      strategies: ['jwt'],
+      scope: ['profile']
     },
     validate: {
       payload: {

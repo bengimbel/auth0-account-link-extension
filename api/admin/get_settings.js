@@ -6,10 +6,8 @@ module.exports = () => ({
   method: 'GET',
   options: {
     auth: {
-      stratigies: ['jwt'],
-      access: {
-        scope: ['profile']
-      }
+      strategies: ['jwt'],
+      scope: ['profile']
     }
   },
   path: '/admin/settings',

@@ -5,10 +5,8 @@ module.exports = () => ({
   path: '/admin/user',
   options: {
     auth: {
-      stratigies: ['jwt'],
-      access: {
-        scope: ['profile']
-      }
+      strategies: ['jwt'],
+      scope: ['profile']
     }
   },
   handler: (req, h) => h.response({
