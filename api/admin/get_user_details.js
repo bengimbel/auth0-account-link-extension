@@ -11,8 +11,8 @@ module.exports = () => ({
     }
   },
   handler: (req, h) => {
-    console.log(`${req.auth}: req.auth.credentials`);
-    logger.info(`${req.auth}: req.auth.credentials`);
+    console.log(`${JSON.stringify(req.auth)}: req.auth.credentials`);
+    logger.info(`${JSON.stringify(req.auth)}: req.auth.credentials`);
     return h.response({
       email: req.auth.credentials.email,
       avatar: avatarUrl(req.auth.credentials.email)
