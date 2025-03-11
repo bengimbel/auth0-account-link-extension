@@ -6,8 +6,7 @@ module.exports = () => ({
   options: {
     auth: {
       strategies: ['jwt'],
-      // scope: ['profile'],
-      scope: ['yar']
+      scope: ['profile']
     }
   },
   handler: (req, h) => h.response({

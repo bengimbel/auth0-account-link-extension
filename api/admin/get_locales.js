@@ -7,8 +7,7 @@ module.exports = () => ({
   options: {
     auth: {
       strategies: ['jwt'],
-      // scope: ['profile'],
-      scope: ['yar']
+      scope: ['profile']
     }
   },
   path: '/admin/locales',
