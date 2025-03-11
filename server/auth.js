@@ -114,8 +114,8 @@ module.exports = {
             decoded.payload.scope = scopes.map(
               scope => scope.value
             ); // eslint-disable-line no-param-reassign
-            console.log(`${decoded} isDashboardAdminRequest IS SUCCESS`);
-            logger.info(`${decoded} isDashboardAdminRequest IS SUCCESS`);
+            console.log(`${JSON.stringify(decoded)} isDashboardAdminRequest IS SUCCESS`);
+            logger.info(`${JSON.stringify(decoded)} isDashboardAdminRequest IS SUCCESS`);
             return { credentials: decoded.payload, isValid: true };
           }
         } catch (error) {
