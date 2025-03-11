@@ -16,9 +16,8 @@ const { promisify } = require('util');
 const validateToken = async (childtoken) => {
   try {
     const decoded = decode(childtoken, { complete: true });
-    const jwtVerifyAsync = promisify(jwt.verify);
-
     const key = config('AUTH0_CLIENT_SECRET');
+    const jwtVerifyAsync = promisify(jwt.verify);
     if (!key) {
       return false;
     }
