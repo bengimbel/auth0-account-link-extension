@@ -14,10 +14,12 @@ const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 
 const validateToken = async (childtoken) => {
+  console.log(`${JSON.stringify(childtoken)}: childtoken validate token`);
+  logger.info(`${JSON.stringify(childtoken)}: childtoken validate token`);
   try {
     const decoded = decode(childtoken, { complete: true });
-    const key = config('AUTH0_CLIENT_SECRET');
     const jwtVerifyAsync = promisify(jwt.verify);
+    const key = config('AUTH0_CLIENT_SECRET');
     if (!key) {
       return false;
     }
@@ -29,7 +31,8 @@ const validateToken = async (childtoken) => {
     };
 
     await jwtVerifyAsync(childtoken, key, verifyOptions);
-
+    console.log(`${JSON.stringify(decoded)}: decoded validate token`);
+    logger.info(`${JSON.stringify(decoded)}: decoded validate token`);
     return decoded.payload;
   } catch (error) {
     logger.error('An error was encountered while decoding the token: ', error);
