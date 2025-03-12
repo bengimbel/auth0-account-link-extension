@@ -32,5 +32,16 @@ describe('Requesting the metadata route', function() {
       expect(res.statusCode).to.equal(200);
       expect(res.result).to.deep.equal(metadata);
     });
+
+    // it('returns a 200 on linking page', async function() {
+    //   const headers = {
+    //     Authorization: `Bearer ${createToken({user_id: 1, email: 'foo@example.com'})}`
+    //   };
+    //   const options = { method: 'GET', url: '/', headers };
+    //   const res = await server.inject(options);
+    //   console.log(res)
+    //   expect(res.statusCode).to.equal(200);
+    //   expect(res.result).to.deep.equal(metadata);
+    // });
   });
 });

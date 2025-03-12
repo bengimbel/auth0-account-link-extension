@@ -20,6 +20,22 @@ module.exports = function(currentUser, matchingUsers, params, token) {
       .map(function(identity) {
         return identity.connection;
       });
+    var obj = {
+      iss: token.iss,
+      client_id: params.client_id,
+      redirect_uri: params.redirect_uri,
+      response_type: params.response_type,
+      response_mode: params.response_mode,
+      scope: params.scope,
+      state: params.original_state,
+      nonce: params.nonce,
+      audience: params.audience,
+      link_account_token: params.child_token,
+      prevent_sign_up: true,
+      connection: connections[0]
+    };
+    console.log(obj, "OBJ FOR AUTHORIZATION");
+
 
     var authorize = function(domain, qs) {
       var query = keysForObject(qs)
@@ -30,8 +46,12 @@ module.exports = function(currentUser, matchingUsers, params, token) {
           return key + '=' + encodeURIComponent(qs[key]);
         })
         .join('&');
-
-      window.location = domain + 'authorize?' + query;
+      
+      console.log(domain + 'authorize?' + query, "URL FOR AUTHORIZATION");
+      setTimeout(() => {
+        window.location = domain + 'authorize?' + query;
+      }, 7000)
+      // window.location = domain + 'authorize?' + query;
     };
 
     var updateContinueUrl = function(linkEl, domain, state) {
