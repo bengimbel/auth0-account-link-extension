@@ -63,7 +63,8 @@ module.exports = () => ({
     const customCSSTag = stylesheetHelper.tag(config('CUSTOM_CSS'), true);
     const params = req.query;
     const dynamicSettings = {};
-
+    console.log(`${JSON.stringify(params)}: params`);
+    logger.info(`${JSON.stringify(params)}: params`);
     if (params.locale) dynamicSettings.locale = params.locale;
     if (params.color) dynamicSettings.color = `#${params.color}`;
     if (params.title) dynamicSettings.title = params.title;
