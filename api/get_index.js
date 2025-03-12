@@ -14,8 +14,6 @@ const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 
 const validateToken = async (childtoken) => {
-  console.log(`${JSON.stringify(childtoken)}: childtoken validate token`);
-  logger.info(`${JSON.stringify(childtoken)}: childtoken validate token`);
   try {
     const decoded = decode(childtoken, { complete: true });
     const jwtVerifyAsync = promisify(jwt.verify);
@@ -29,10 +27,8 @@ const validateToken = async (childtoken) => {
       issuer: `https://${config('AUTH0_DOMAIN')}/`,
       algorithms: ['HS256']
     };
-
     await jwtVerifyAsync(childtoken, key, verifyOptions);
-    console.log(`${JSON.stringify(decoded)}: decoded validate token`);
-    logger.info(`${JSON.stringify(decoded)}: decoded validate token`);
+
     return decoded.payload;
   } catch (error) {
     logger.error('An error was encountered while decoding the token: ', error);
@@ -63,8 +59,6 @@ module.exports = () => ({
     const customCSSTag = stylesheetHelper.tag(config('CUSTOM_CSS'), true);
     const params = req.query;
     const dynamicSettings = {};
-    console.log(`${JSON.stringify(params)}: params`);
-    logger.info(`${JSON.stringify(params)}: params`);
     if (params.locale) dynamicSettings.locale = params.locale;
     if (params.color) dynamicSettings.color = `#${params.color}`;
     if (params.title) dynamicSettings.title = params.title;
