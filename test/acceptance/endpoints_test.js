@@ -5,7 +5,7 @@ const metadata = require('../../webtask.json');
 const handlerUtils = require('../../lib/handlerUtils')
 const storage = require('../../lib/storage')
 const { createAuth0Token, createServer, createWebtaskToken } = require('../test_helper');
-const users = require('./users.json')
+const users = require('./test_data/users.json')
 const indexTemplate = require('../../templates');
 const allLocales = require('../../locales.json');
 
@@ -74,13 +74,14 @@ describe('Requesting the metadata route', function() {
     describe('/admin/locales endpoint', function() {
       beforeEach(async function() {
         sinon.stub(storage, 'getLocales').resolves(allLocales);
+        sinon.stub(storage, 'setLocales').resolves({ status: 'ok' });
       });
 
       afterEach(async function() {
         sinon.restore();
       });
 
-      it('returns 200 and satisfies endpoint scope', async function() {
+      it('GET /admin/locales returns 200 and satisfies endpoint scope', async function() {
         const token = createWebtaskToken({ user_id: 'auth0|67d304a8b5dd1267e87c53ba', email: 'ben1@acme.com' });
         const headers = { Authorization: `Bearer ${token}` };
         const options = { method: 'GET', url: '/admin/locales', headers };
@@ -88,18 +89,29 @@ describe('Requesting the metadata route', function() {
         const res = await server.inject(options);
         expect(res.statusCode).to.equal(200);
       });
+      it('PUT /admin/locales returns 200 and satisfies endpoint scope', async function() {
+        const token = createWebtaskToken({ user_id: 'auth0|67d304a8b5dd1267e87c53ba', email: 'ben1@acme.com' });
+        const headers = { Authorization: `Bearer ${token}` };
+        const payload = { locale: { code: 'en', name: 'English' } };
+        const options = { method: 'PUT', url: '/admin/locales', headers, payload };
+   
+        const res = await server.inject(options);
+        expect(res.statusCode).to.equal(200);
+        expect(res.result).to.deep.equal({ status: 'ok' });
+      });
     });
     describe('/admin/settings endpoint', function() {
       beforeEach(async function() {
         sinon.stub(storage, 'getLocales').resolves(allLocales);
         sinon.stub(storage, 'getSettings').resolves({});
+        sinon.stub(storage, 'setSettings').resolves({ status: 'ok' });
       });
 
       afterEach(async function() {
         sinon.restore();
       });
 
-      it('returns 200 and satisfies endpoint scope', async function() {
+      it('GET /admin/settings returns 200 and satisfies scope', async function() {
         const token = createWebtaskToken({ user_id: 'auth0|67d304a8b5dd1267e87c53ba', email: 'ben1@acme.com' });
         const headers = { Authorization: `Bearer ${token}` };
         const options = { method: 'GET', url: '/admin/settings', headers };
@@ -115,6 +127,34 @@ describe('Requesting the metadata route', function() {
             { code: 'nl', name: 'Dutch' }
           ]
         })
+      });
+      it('PUT /admin/settings returns 200 and satisfies endpoint scope', async function() {
+        const token = createWebtaskToken({ user_id: 'auth0|67d304a8b5dd1267e87c53ba', email: 'ben1@acme.com' });
+        const headers = { Authorization: `Bearer ${token}` };
+        const payload = {
+          template: "template1",
+          locale: "en",
+          title: "title1",
+          color: "#000000",
+          logoPath: "https://example.com/logo.png",
+          removeOverlay: false
+        };
+        const options = { method: 'PUT', url: '/admin/settings', headers, payload };
+   
+        const res = await server.inject(options);
+        expect(res.statusCode).to.equal(200);
+        expect(res.result).to.deep.equal({ status: 'ok' });
+      });
+      describe('/admin/user endpoint', function() {
+        it('returns 200 and satisfies /admin/user endpoint scope', async function() {
+          const token = createWebtaskToken({ user_id: 'auth0|67d304a8b5dd1267e87c53ba', email: 'ben1@acme.com' });
+          const headers = { Authorization: `Bearer ${token}` };
+          const options = { method: 'GET', url: '/admin/user', headers };
+  
+          const res = await server.inject(options);
+          expect(res.statusCode).to.equal(200);
+          expect(res.result).to.have.keys(['email', 'avatar'])
+        });
       });
     });
   });

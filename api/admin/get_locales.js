@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-const { boomify } = require('@hapi/boom');
+const Boom = require('@hapi/boom');
 const storage = require('../../lib/storage');
 
 module.exports = () => ({
@@ -17,7 +17,7 @@ module.exports = () => ({
 
       return h.response(locales);
     } catch (error) {
-      return boomify(error);
+      return Boom.serverUnavailable(error);
     }
   }
 });
