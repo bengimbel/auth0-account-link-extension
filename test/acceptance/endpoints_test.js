@@ -3,12 +3,18 @@ const { request, createServer, createWebtaskToken } = require('../test_helper');
 const { sign } = require('jsonwebtoken');
 const config = require('../../lib/config');
 const metadata = require('../../webtask.json');
+const handlerUtils = require('../../lib/handlerUtils')
+const storage = require('../../lib/storage')
+const { createAuth0Token, createServer, createWebtaskToken } = require('../test_helper');
+const users = require('./test_data/users.json')
+const indexTemplate = require('../../templates');
+const allLocales = require('../../locales.json');
 
 describe('Requesting the metadata route', function() {
   let server;
 
-  before(function() {
-    server = createServer();
+  before(async function() {
+    server = await createServer();
   });
 
   after(function() {
@@ -16,11 +22,11 @@ describe('Requesting the metadata route', function() {
   });
 
   describe('Regardless of token', function() {
-    it('returns content from webtask.json file', function() {
-      return server.inject({ method: 'GET', url: '/meta' }).then(res => {
-        expect(res.statusCode).to.eq(200);
-        expect(res.result).to.eq(metadata);
-      });
+    it('returns content from webtask.json file', async function() {
+      const options = { method: 'GET', url: '/meta' };
+      const res = await server.inject(options);
+      expect(res.statusCode).to.equal(200);
+      expect(res.result).to.deep.equal(metadata);
     });
   });
 

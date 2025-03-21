@@ -9,25 +9,21 @@ const { resolveLocale } = require('../lib/locale');
 const { getSettings } = require('../lib/storage');
 const { validateAuth0Token, fetchUsersFromToken } = require('../lib/linkingJwtUtils');
 
-
 module.exports = () => ({
   method: 'GET',
   path: '/',
-  config: {
+  options: {
     auth: false
   },
-  handler: (req, reply) => {
+  handler: async (req, h) => {
     if (_.isEmpty(req.query)) {
-      reply.redirect(`${config('PUBLIC_WT_URL')}/admin`);
-      return;
+      return h.redirect(`${config('PUBLIC_WT_URL')}/admin`);
     }
     const stylesheetHelper = stylesheet(config('NODE_ENV') === 'production');
     const stylesheetTag = stylesheetHelper.tag('link');
     const customCSSTag = stylesheetHelper.tag(config('CUSTOM_CSS'), true);
     const params = req.query;
-
     const dynamicSettings = {};
-
     if (params.locale) dynamicSettings.locale = params.locale;
     if (params.color) dynamicSettings.color = `#${params.color}`;
     if (params.title) dynamicSettings.title = params.title;
@@ -90,12 +86,39 @@ module.exports = () => ({
         indexTemplate({
           dynamicSettings,
           stylesheetTag,
-          currentUser: null,
-          matchingUsers: [],
-          customCSSTag
-        }).then((template) => {
-          reply(template).code(400);
+          currentUser,
+          matchingUsers,
+          customCSSTag,
+          locale,
+          identities: humanizedIdentities,
+          params,
+          token
         });
+
+        return h.response(template).type('text/html').code(200);
+      } catch (error) {
+        const state = req.query.state;
+        logger.error('An error was encountered: ', error);
+        logger.info(
+          `Redirecting to failed link to /continue: ${token.iss}continue?state=${
+            req.query.state
+          }`
+        );
+
+        return h.redirect(`${token.iss}continue?state=${state}`);
+      }
+    } catch (tokenError) {
+      logger.error('An invalid token was provided', tokenError);
+
+      const template = await indexTemplate.renderTemplate({
+        dynamicSettings,
+        stylesheetTag,
+        currentUser: null,
+        matchingUsers: [],
+        customCSSTag
       });
+
+      return h.response(template).type('text/html').code(400);
+    }
   }
 });
