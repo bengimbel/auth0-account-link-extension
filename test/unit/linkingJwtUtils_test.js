@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const handlerUtils = require('../../lib/handlerUtils')
+const handlerUtils = require('../../lib/linkingJwtUtils')
 const { createAuth0Token, createWebtaskToken } = require('../test_helper');
 
 describe('Handler Utils Tests', () => {
