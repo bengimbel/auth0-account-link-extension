@@ -1,7 +1,5 @@
-const { decode } = require('jsonwebtoken');
 const _ = require('lodash');
 const config = require('../lib/config');
-const findUsersByEmail = require('../lib/findUsersByEmail');
 const indexTemplate = require('../templates/index');
 const logger = require('../lib/logger');
 const stylesheet = require('../lib/stylesheet');
@@ -9,23 +7,7 @@ const getIdentityProviderPublicName = require('../lib/idProviders');
 const humanizeArray = require('../lib/humanize');
 const { resolveLocale } = require('../lib/locale');
 const { getSettings } = require('../lib/storage');
-
-const decodeToken = token =>
-  new Promise((resolve, reject) => {
-    try {
-      resolve(decode(token));
-    } catch (e) {
-      reject(e);
-    }
-  });
-
-const fetchUsersFromToken = ({ sub, email }) =>
-  findUsersByEmail(email).then(users => ({
-    currentUser: users.find(u => u.user_id === sub),
-    matchingUsers: users
-      .filter(u => u.user_id !== sub)
-      .sort((prev, next) => new Date(prev.created_at) - new Date(next.created_at))
-  }));
+const { validateAuth0Token, fetchUsersFromToken } = require('../lib/linkingJwtUtils');
 
 module.exports = () => ({
   method: 'GET',
@@ -50,8 +32,10 @@ module.exports = () => ({
     if (params.title) dynamicSettings.title = params.title;
     if (params.logoPath) dynamicSettings.logoPath = params.logoPath;
 
-    decodeToken(params.child_token)
+    validateAuth0Token(params.child_token)
       .then((token) => {
+        console.log(`${JSON.stringify(token)}: token index`);
+        logger.info(`${JSON.stringify(token)}: token.index`);
         fetchUsersFromToken(token)
           .then(({ currentUser, matchingUsers }) => {
             getSettings().then((settings) => {
