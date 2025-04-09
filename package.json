@@ -24,7 +24,7 @@
     "bundleModules": true,
     "externals": [
       "auth0-extension-tools@1.5.2",
-      "auth0@2.8.0",
+      "auth0@4.9.0",
       "bluebird@3.5.0",
       "body-parser@1.12.4",
       "boom@3.2.2",
@@ -75,7 +75,7 @@
     "@hapi/inert": "^7.1.0",
     "@hapi/joi": "^17.1.1",
     "@ngrok/ngrok": "^1.4.1",
-    "auth0": "2.27.1",
+    "auth0": "4.9.0",
     "auth0-extension-tools": "^1.5.2",
     "hapi-auth-jwt2": "10.5.1",
     "jsonwebtoken": "9.0.0",
