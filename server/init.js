@@ -5,7 +5,15 @@ const createServer = require('./index');
 const logger = require('../lib/logger');
 const initStorage = require('../lib/db').init;
 
-const initServer = async (cfg, storageContext) => {
+const defaultCallback = (err) => {
+  if (err) {
+    logger.error('Hapi initialization failed.');
+    logger.error(err);
+  } else {
+    logger.info('Hapi initialization completed.');
+  }
+};
+const initServer = async (cfg, storageContext, cb) => {
   try {
     // Set configuration provider.
     config.setProvider(key => cfg(key) || process.env[key]);
@@ -18,10 +26,7 @@ const initServer = async (cfg, storageContext) => {
     );
 
     // Start the server.
-    const server = await createServer();
-    logger.info('Hapi initialization completed.');
-
-    return server;
+    return createServer(cb || defaultCallback);
   } catch (error) {
     logger.error('Hapi initialization failed.');
     logger.error(error);
