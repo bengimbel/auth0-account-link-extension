@@ -66,7 +66,6 @@ module.exports = {
             return { credentials: decoded.payload, isValid: true };
           }
           if (isDashboardAdminRequest) {
-            console.log('amIGETTINGRAN');
             const jwtVerifyAsync = promisify(jwt.verify);
 
             if (!decoded.payload.access_token || !decoded.payload.access_token.length) {
@@ -83,7 +82,6 @@ module.exports = {
             return { credentials: decoded.payload, isValid: true };
           }
         } catch (error) {
-          console.log('errorHERE');
           return { isValid: false };
         }
       }
