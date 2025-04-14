@@ -18,7 +18,9 @@ module.exports = ({ extensionURL = '', username = 'Unknown', clientID = '', clie
 
   // 'query' can be undefined when using '/oauth/token' to log in
   context.request.query = context.request.query || {};
-
+  console.log(auth0.domain, 'auth0.domain');
+  console.log('auth0': auth0);
+  console.log(JSON.stringify(auth0));
   var config = {
     endpoints: {
       linking: '${extensionURL.replace(/\/$/g, '')}',
