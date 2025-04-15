@@ -14,7 +14,8 @@ const factory = (wtConfig, wtStorage) => {
   // Require in place to load the dependency only when needed
   // and avoid Blocked event loop errors
   const hapiApp = require('./server/init');
-
+  console.log(`wtConfig: ${JSON.stringify(wtConfig)}`);
+  console.log(`wtStorage: ${JSON.stringify(wtStorage)}`);
   return hapiApp(wtConfig, wtStorage);
 };
 
