@@ -3,8 +3,9 @@
 const Joi = require('@hapi/joi');
 const storage = require('../../lib/storage');
 
-const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
+const logoPathRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const colorRegex = /^#[A-Fa-f0-9]{6}/;
+const customDomainRegex = /^(?!www\.)[\w.-]+\.[a-z]{2,}$/i;
 
 module.exports = () => ({
   method: 'PUT',
@@ -21,11 +22,11 @@ module.exports = () => ({
           .regex(colorRegex)
           .required(),
         logoPath: Joi.string()
-          .regex(urlRegex)
+          .regex(logoPathRegex)
           .allow(''),
         removeOverlay: Joi.bool().default(false),
         customDomain: Joi.string()
-          .regex(urlRegex)
+          .regex(customDomainRegex)
           .allow('')
       }
     }
