@@ -22,6 +22,7 @@ const factory = (wtConfig, wtStorage) => {
 // that causes "Blocked event loop errors"
 // This function is a helper to avoid this type of errors
 const createServer = (context, req, res) => {
+  console.log(`HELLO4: ${JSON.stringify(req.x_wt.ectx)}`);
   // To avoid the  "Blocked event loop" error we delay loading the application module
   setImmediate(() => {
     console.log(`HELLO: ${JSON.stringify(req.x_wt.ectx)}`);
@@ -39,5 +40,6 @@ const createServer = (context, req, res) => {
 };
 
 module.exports = (context, req, res) => {
+  console.log(`HELLO3: ${JSON.stringify(req.x_wt.ectx)}`);
   createServer(context, req, res);
 };
