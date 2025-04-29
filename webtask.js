@@ -24,6 +24,7 @@ const factory = (wtConfig, wtStorage) => {
 const createServer = (context, req, res) => {
   // To avoid the  "Blocked event loop" error we delay loading the application module
   setImmediate(() => {
+    console.log(JSON.stringify(req.x_wt.ectx));
     const publicUrl =
       (req.x_wt && req.x_wt.ectx && req.x_wt.ectx.PUBLIC_WT_URL) || false;
     if (!publicUrl) {
