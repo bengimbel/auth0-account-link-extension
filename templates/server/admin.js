@@ -53,7 +53,7 @@ ${header(baseURL)}
 
       <div class="form-group">
         <label for="custom_domain">Custom Domain</label>
-        <select name="custom_domain" class="form-control" id="custom_domain_input"></select>
+        <input name="custom_domain" class="form-control" id="custom_domain_input" />
       </div>
 
       <div class="form-group">
