@@ -125,7 +125,7 @@ module.exports = function() {
         $titleInput.val(data.title);
         $colorInput.val(data.color);
         $logoPathInput.val(data.logoPath);
-        $customDomainInput.val(data.custom_domain);
+        $customDomainInput.val(data.customDomain);
 
         $removeOverlayCheck.prop('checked', data.removeOverlay || false);
       })
