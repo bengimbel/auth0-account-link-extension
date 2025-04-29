@@ -23,7 +23,10 @@ module.exports = () => ({
         logoPath: Joi.string()
           .regex(urlRegex)
           .allow(''),
-        removeOverlay: Joi.bool().default(false)
+        removeOverlay: Joi.bool().default(false),
+        customDomain: Joi.string()
+          .regex(urlRegex)
+          .allow('')
       }
     }
   },

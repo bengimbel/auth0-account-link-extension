@@ -52,6 +52,11 @@ ${header(baseURL)}
       </div>
 
       <div class="form-group">
+        <label for="custom_domain">Custom Domain</label>
+        <select name="custom_domain" class="form-control" id="custom_domain_input"></select>
+      </div>
+
+      <div class="form-group">
         <input type="checkbox" id="remove_overlay"/> Remove widget's overlay
       </div>
 
