@@ -1,7 +1,8 @@
 const { expect } = require('chai');
-const sinon = requre('sinon');
+const sinon = require('sinon');
 const linkingJwtUtils = require('../../lib/linkingJwtUtils')
 const { createAuth0Token, createWebtaskToken } = require('../test_helper');
+const storage = require('../../lib/storage');
 
 describe('Linking JWT Utils Tests', () => {
   beforeEach(async function() {
