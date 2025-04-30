@@ -22,16 +22,13 @@ const factory = (wtConfig, wtStorage) => {
 // that causes "Blocked event loop errors"
 // This function is a helper to avoid this type of errors
 const createServer = (context, req, res) => {
-  console.log(`HELLO4: ${JSON.stringify(req.x_wt.ectx)}`);
   // To avoid the  "Blocked event loop" error we delay loading the application module
   setImmediate(() => {
-    console.log(`HELLO: ${JSON.stringify(req.x_wt.ectx)}`);
     const publicUrl =
       (req.x_wt && req.x_wt.ectx && req.x_wt.ectx.PUBLIC_WT_URL) || false;
     if (!publicUrl) {
       config.setValue('PUBLIC_WT_URL', urlHelpers.getWebtaskUrl(req));
     }
-    console.log(`HELLO2: ${JSON.stringify(req.x_wt.ectx)}`);
     // After the application has been initialized we remove the
     // artificial delay in processing
     const createServer2 = localTools.createServer(factory);
@@ -40,6 +37,5 @@ const createServer = (context, req, res) => {
 };
 
 module.exports = (context, req, res) => {
-  console.log(`HELLO3: ${JSON.stringify(req.x_wt.ectx)}`);
   createServer(context, req, res);
 };
