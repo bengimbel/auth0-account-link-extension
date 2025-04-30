@@ -7,6 +7,9 @@ const logoPathRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2
 const colorRegex = /^#[A-Fa-f0-9]{6}/;
 const customDomainRegex = /^(?!www\.)[\w.-]+\.[a-z]{2,}$/i;
 
+// For validation, keep existing required
+// fields, but let users send a customDomain
+// only if they'd like
 module.exports = () => ({
   method: 'PUT',
   options: {
@@ -14,13 +17,11 @@ module.exports = () => ({
       strategies: ['jwt']
     },
     validate: {
-      payload: {
-        template: Joi.string().required(),
-        locale: Joi.string().required(),
-        title: Joi.string().required(),
-        color: Joi.string()
-          .regex(colorRegex)
-          .required(),
+      payload: Joi.object({
+        template: Joi.string(),
+        locale: Joi.string(),
+        title: Joi.string(),
+        color: Joi.string().regex(colorRegex),
         logoPath: Joi.string()
           .regex(logoPathRegex)
           .allow(''),
@@ -28,7 +29,7 @@ module.exports = () => ({
         customDomain: Joi.string()
           .regex(customDomainRegex)
           .allow('')
-      }
+      }).and('template', 'locale', 'title', 'color') // If one exists, all are required
     }
   },
   path: '/admin/settings',
