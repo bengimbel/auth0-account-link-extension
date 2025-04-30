@@ -28,7 +28,7 @@ module.exports = ({ extensionURL = '', username = 'Unknown', clientID = '', clie
     token: {
       clientId: '${clientID}',
       clientSecret: '${clientSecret}',
-      issuer: configuration.DOMAIN
+      issuer: configuration.CUSTOM_DOMAIN
     }
   };
 
