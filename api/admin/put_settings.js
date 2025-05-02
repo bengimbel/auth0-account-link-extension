@@ -9,9 +9,10 @@ const colorRegex = /^#[A-Fa-f0-9]{6}/;
 
 const processSettings = async (payload) => {
   const { customDomain } = payload;
-
+  console.log('customDomain', customDomain);
   if (customDomain) {
     const registeredCustomDomain = await linkingJwtUtils.fetchRegisteredCustomDomain(customDomain);
+    console.log('registeredCustomDomain', registeredCustomDomain);
     if (!registeredCustomDomain) {
       throw new Error(`Custom domain ${customDomain} not found`);
     }
