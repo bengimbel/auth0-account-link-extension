@@ -1,8 +1,8 @@
 {
   "title": "Auth0 Account Link",
   "name": "auth0-account-link",
-  "version": "3.10.1",
-  "preVersion": "3.0.0",
+  "version": "3.4.0",
+  "preVersion": "3.3.0",
   "author": "auth0",
   "description":
     "This extension gives Auth0 customers the ability to allow their users to link their accounts",
@@ -10,7 +10,7 @@
   "logoUrl": "https://cdn.auth0.com/extensions/auth0-authz/assets/logo.svg",
   "docsUrl": "https://auth0.com/docs/extensions/account-link",
   "initialUrlPath": "/login",
-  "repository": "https://github.com/bengimbel/auth0-account-link-extension/tree/temp_point_to_my_fork_june302026",
+  "repository": "https://github.com/bengimbel/auth0-account-link-extension",
   "keywords": ["auth0", "extension", "account-link"],
   "secrets": {
     "CUSTOM_CSS": {
