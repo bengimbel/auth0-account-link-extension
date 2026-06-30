@@ -109,6 +109,7 @@
     "sinon": "^19.0.2"
   },
   "resolutions": {
-    "jsonwebtoken": "9.0.0"
+    "jsonwebtoken": "9.0.0",
+    "axios": "1.2.6"
   }
 }
