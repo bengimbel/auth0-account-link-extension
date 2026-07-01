@@ -1,6 +1,6 @@
 {
   "name": "auth0-account-link-extension",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "Auth0 Account Link Extension",
   "main": "index.js",
   "engines": {
@@ -109,6 +109,7 @@
     "sinon": "^19.0.2"
   },
   "resolutions": {
-    "jsonwebtoken": "9.0.0"
+    "jsonwebtoken": "9.0.0",
+    "axios": "1.15.0"
   }
 }
